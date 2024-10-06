@@ -13,6 +13,7 @@ execute:
   error: true
   warning: false
   fig-align: center
+code-fold: true
 
 ---
 
@@ -20,6 +21,7 @@ execute:
 
 Now that you have the Lab 2 repository cloned, you need to make sure these files
 are being tracked for **your** repository. To do this you need to:
+
 
 -   Click the "Git" tab in upper right pane
 -   Check the "Staged" box for every file listed
@@ -130,7 +132,7 @@ The dimensions for the surveys.csv are 30463 rows by 15 columns.
 
 **3. What are the data types of the variables in this dataset?**
 ```{r}
-#| label: get-dimensions
+#| label: get-datatypes
 
 # Referenced: https://stackoverflow.com/questions/21125222/determine-the-data-types-of-a-data-frames-columns
 
@@ -152,9 +154,9 @@ for different types of plots:
 #| warning: false
 #| output: false
 
-ggplot(data = <DATA>,
-       mapping = aes(<VARIABLE MAPPINGS>)) +
-  <GEOM_FUNCTION>()
+#ggplot(data = <DATA>,
+#      mapping = aes(<VARIABLE MAPPINGS>)) +
+#  <GEOM_FUNCTION>()
 ```
 
 Let's get started!
@@ -167,8 +169,17 @@ the $x$-axis) and `hindfoot_length` (on the $y$-axis).**
 ```{r}
 #| label: scatterplot
 
-ggplot(data = survery_csv) +
-  geom_point(mapping = aes(x = weight, y = hindfoot_length), position = "jitter")
+ggplot(data = survey_csv) +
+  geom_point(mapping = aes(x = weight,
+                           y = hindfoot_length,
+                           alpha = weight),
+             position = "jitter") + 
+  facet_wrap(~species) +
+  labs(x = "Weight (g)",
+       y = "",
+       title = "Relationship Between Hindfoot Length and Weight Across Species in Portal, Arizona",
+       subtitle = "Hindfoot Length (mm)")
+
 
 ```
 
@@ -176,53 +187,16 @@ We can see there are **a lot** of points plotted on top of each other. Let's try
 
 **5. Let's add transparency (`alpha`) to the points, to make the points more transparent and (possibly) easier to see.**
 
-```{r}
-#| label: scatterplot-modified
-
-ggplot(data = survery_csv) +
-  geom_point(mapping = aes(x = weight,
-                           y = hindfoot_length,
-                           alpha = weight),
-             position = "jitter")
-
-
-```
 
 Despite our best efforts there is still a substantial amount of overplotting occurring in our scatterplot. Let's try splitting the dataset into smaller
 subsets and see if that allows for us to see the trends a bit better.
 
 **6. Facet your scatterplot by `species`.**
 
-```{r}
-#| label: scatterplot-facetted
 
-ggplot(data = survery_csv) +
-  geom_point(mapping = aes(x = weight,
-                           y = hindfoot_length,
-                           alpha = weight),
-             position = "jitter") + 
-  facet_wrap(~species)
-
-
-```
 **7. No plot is complete without axis labels and a title. Include reader friendly labels and a title to your plot.**
 
-```{r}
-#| label: scatterplot-facetted
 
-ggplot(data = survery_csv) +
-  geom_point(mapping = aes(x = weight,
-                           y = hindfoot_length,
-                           alpha = weight),
-             position = "jitter") + 
-  facet_wrap(~species) +
-  labs(x = "Weight",
-       y = "",
-       title = "Relationship Between Hindfoot Length and Weight Across Species in Portal, Arizona
-       Hindfoot Length")
-
-
-```
 
 It takes a larger cognitive load to read text that is rotated. It is common practice in many journals and media outlets to move the $y$-axis label to the top of the graph under the title.
 
@@ -230,11 +204,27 @@ It takes a larger cognitive load to read text that is rotated. It is common prac
 
 <!-- Continue to modify the plot you originally created for question 4! -->
 
+
+
 ## Boxplots
 
 ```{r}
 #| label: boxplot
+#| fig-align: center
 
+# Referenced: https://chatgpt.com/share/6701f393-3234-8009-bc09-a0e39637ee14
+
+ggplot(data = survey_csv,
+       mapping = aes(x = species, y = weight)) +
+  geom_jitter(mapping = aes(color = "orange3", alpha = 0.7), show.legend = FALSE) +
+  geom_boxplot(outlier.alpha = 0) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    x = "Species",
+    y = " ",
+    subtitle = "Weight (g)",
+    title = "Comparison of Weight Distribution Across Species from Portal, Arizona"
+  )
 
 ```
 
@@ -244,14 +234,12 @@ A fundamental complaint of boxplots is that they do not plot the raw data. Howev
 
 **11. Add another layer to your previous plot that plots each observation.**
 
-<!-- Modify the plot you made for question 10! -->
 
 Alright, this should look less than optimal. Your points should appear rather stacked on top of each other. To make them less stacked, we need to jitter them
 a bit, using `geom_jitter()`.
 
 **12. Remove the previous layer and include a `geom_jitter()` layer instead.**
 
-<!-- Continue to modify the plot you made for question 10! -->
 
 That should look a bit better! But its really hard to see the points when everything is black.
 
@@ -259,12 +247,12 @@ That should look a bit better! But its really hard to see the points when everyt
 to use whatever color you wish! Some of my favorites are "orange3" and
 "steelblue".
 
-<!-- Continue to modify the plot you made for question 10! -->
 
 Great! Now that you can see the points, you should notice something odd: there
 are two colors of points still being plotted. Some of the observations are being plotted twice, once from `geom_boxplot()` as outliers and again from `geom_jitter()`!
 
 **14. Inspect the help file for `geom_boxplot()` and see how you can remove the outliers from being plotted by `geom_boxplot()`. Make this change in your code!**
+
 
 <!-- Continue to modify the plot you made for question 10! -->
 
@@ -272,6 +260,7 @@ Some small changes can make **big** differences to plots. One of these changes
 are better labels for a plot's axes and legend.
 
 **15. Modify the $x$-axis and $y$-axis labels to describe what is being plotted. Be sure to include any necessary units! You might also be getting overlap in the species names -- use `theme(axis.text.x = ____)` or `theme(axis.text.y = ____)` to turn the species axis labels 45 degrees.**
+
 
 <!-- Continue to modify the plot you made for question 10! -->
 
@@ -281,6 +270,20 @@ Some people (and journals) prefer for boxplots to be stacked with a specific ori
 
 ```{r}
 #| label: rotated-boxplot
+#| fig-align: center
+
+# Referenced: https://chatgpt.com/share/6701f393-3234-8009-bc09-a0e39637ee14
+
+ggplot(data = survey_csv,
+       mapping = aes(y = species, x = weight)) +
+  geom_jitter(mapping = aes(color = "orange3", alpha = 0.7), show.legend = FALSE) +
+  geom_boxplot(outlier.alpha = 0) +
+  labs(
+    x = "Weight (g)",
+    y = " ",
+    subtitle = "Species",
+    title = "Comparison of Weight Distribution Across Species from Portal, Arizona"
+  )
 
 ```
 
@@ -314,13 +317,14 @@ might want to look up the help documentation for `aov()`.
 ```{r}
 #| label: anova
 
-species_mod <- aov()
+species_mod <- aov(weight ~ species, data = survey_csv)
 
 summary(species_mod)
 ```
 
 **18. Based on the results of the ANOVA F-test, draw a conclusion in context of the hypotheses. Make sure to cite appropriate output from above.**
 
+Based on the results of the ANOVA F-test, we found a statistically significant difference in average species weight according to species 13 with a value of 19916 and the p-value < 0.0001, which is less than the significance level of 0.05. Therefore we reject the null hypothesis that the population mean weight is the same among all species. 
 
 # Lab 2 Submission
 
