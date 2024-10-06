@@ -1,10 +1,20 @@
 ---
 title: "Challenge 2: Spicing things up with ggplot2"
 author: "Add your name!"
-format: html
+format:
+  html:
+    toc: true
+    code-fold: true
 editor: source
 embed-resources: true
 code-tools: true
+execute:
+  echo: true
+  error: true
+  warning: false
+  fig-align: center
+code-fold: true
+self-contained: true
 ---
 
 For this week's Challenge, you will have three different options to explore.
@@ -25,6 +35,17 @@ Next, create a setup code chunk to load the packages and read in the
 
 Finally, create another code chunk and paste in your code from Question 14 or Question 15 in Lab 2 -- we will be modifying the box plot of weights by species!
 
+```{r}
+#| label: setup
+
+library(tidyverse)
+library(here)
+library(ggridges)
+
+survey_csv <- read_csv(here::here("data","surveys.csv"), show_col_types = FALSE)
+
+```
+
 # Medium: Ridge Plots
 
 In Lab 2, you used side-by-side **boxplots** to visualize the distribution of 
@@ -34,6 +55,21 @@ disguise distributions with multiple modes.
 A "superior" alternative is the density plot. However, `ggplot2` does not allow
 for side-by-side density plots using `geom_density()`. Instead, we will need to
 make use of the `ggridges` package to create side-by-side density (ridge) plots.
+
+```{r}
+#| label: density-plot
+#| fig-align: center
+
+ggplot(data = survey_csv) +
+  geom_density_ridges(mapping = aes(x = weight, y = species, fill = species), alpha = 0.5) +
+  labs(
+    x = "Species",
+    y = " ",
+    subtitle = "Weight (g)",
+    title = "Comparison of Weight Distribution Across Species from Portal, Arizona"
+  )
+
+```
 
 > **For this challenge you are to change your boxplots to ridge plots. You will need to install the `ggridges` package and explore the `geom_density_ridges()` function.**
 
@@ -96,11 +132,36 @@ data, `scale_colour_viridis_c()` for continuous data.
 `scale_fill_<PALNAME>()`, where you specify the name of the palette you wish to
 use (e.g. `scale_color_aaas()`).
 
+
 ::: callout-note
 [This website](https://github.com/EmilHvitfeldt/r-color-palettes) provides an exhaustive list of color themes available through various packages.
 :::
 
 > **In this challenge you are expected to use this information to modify the boxplots you created Lab 2. First, you are to color the boxplots based on the variable `genus`. Next, you are to change the colors used for `genus` using either manual color specification or any of the packages listed here (or others!).**
+
+```{r}
+#| label: setup-color
+library(viridis)
+
+```
+
+```{r}
+#| label: density-plot
+#| fig-align: center
+
+# Referenced: https://chatgpt.com/share/6701f393-3234-8009-bc09-a0e39637ee14
+
+ggplot(data = survey_csv) +
+  geom_density_ridges(mapping = aes(x = weight, y = species, fill = species), alpha = 0.5) +
+  scale_fill_viridis_d() +
+  labs(
+    x = "Species",
+    y = " ",
+    subtitle = "Weight (g)",
+    title = "Comparison of Weight Distribution Across Species from Portal, Arizona"
+  )
+
+```
 
 # Hot: Exploring `ggplot2` Annotation
 

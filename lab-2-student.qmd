@@ -76,6 +76,7 @@ In the code chunk below, load in the packages necessary for your analysis. You s
 
 library(tidyverse)
 library(here)
+library(ggridges)
 
 ```
 
